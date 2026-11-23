@@ -61,6 +61,7 @@ h2{font-size:1.25rem;margin:2rem 0 .5rem}ol,ul.plain{color:var(--muted);padding-
 pre{background:rgba(127,127,127,.1);padding:.8rem 1rem;border-radius:6px;white-space:pre-wrap;font-size:.9rem;color:var(--fg)}
 code{font-size:.9em}main a,main code{overflow-wrap:anywhere}
 @media (max-width:599px){footer,.family-credit,.family,.site-links{font-size:15px}}
+.plist{padding-left:1.1rem}.plist li{margin:.8rem 0}.plist a{font-weight:600}.pmeta{color:var(--muted)}
 </style>
 </head>
 <body>
@@ -93,7 +94,9 @@ code{font-size:.9em}main a,main code{overflow-wrap:anywhere}
 <div class="mark">dinis-cruz.presentations.sovereignweb.site</div>
 <h1>Dinis Cruz: presentations</h1>
 <p>Dinis Cruz's presentations, past and new, each with its PDF and original deck. The repository is the source of truth.</p>
-<p>This site was made by one request to the Sovereign Website pipeline. Its files, its history and its address are in a repository its owner controls, and can move anywhere.</p>
+<p><a href="/add/">Add a presentation</a> &middot; the list below updates itself at every change.</p>
+<div id="list" aria-live="polite"><p>Loading the list...</p></div>
+<noscript><p>The list needs JavaScript; the files are in <a href="https://github.com/SovereignWebsite/Site__Presentations__Dinis-Cruz/tree/dev/site/presentations">site/presentations</a>.</p></noscript>
 <footer>
 <nav class="site-links" aria-label="About this site">
   <a href="/start/">Start here</a>
@@ -103,5 +106,22 @@ code{font-size:.9em}main a,main code{overflow-wrap:anywhere}
 </nav>
 A sovereign website, made with the <a href="https://sovereignwebsite.org/">open pattern</a>. Source: <a href="https://github.com/SovereignWebsite/Site__Presentations__Dinis-Cruz">github.com/SovereignWebsite/Site__Presentations__Dinis-Cruz</a>.</footer>
 </main>
+<script>
+fetch('/presentations/index.json', { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : { presentations: [] }; }).then(function (d) {
+  var el = document.getElementById('list'), ps = d.presentations || [];
+  el.textContent = '';
+  if (!ps.length) { var p = document.createElement('p'); p.textContent = 'No presentations yet. The first one goes up when Dinis adds it: see Add a presentation.'; el.appendChild(p); return; }
+  var ul = document.createElement('ul'); ul.className = 'plist';
+  ps.forEach(function (x) {
+    var li = document.createElement('li'), a = document.createElement('a');
+    a.href = x.pdf || x.url; a.textContent = x.title; li.appendChild(a);
+    var meta = [x.date, x.event].filter(Boolean).join(', ');
+    if (meta) { var m = document.createElement('span'); m.className = 'pmeta'; m.textContent = ' (' + meta + ')'; li.appendChild(m); }
+    if (x.summary) { var s = document.createElement('p'); s.textContent = x.summary; li.appendChild(s); }
+    ul.appendChild(li);
+  });
+  el.appendChild(ul);
+}).catch(function () { document.getElementById('list').textContent = 'The list could not be loaded.'; });
+</script>
 </body>
 </html>

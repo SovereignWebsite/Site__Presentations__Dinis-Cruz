@@ -30,6 +30,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: The list of presentations, from the folders in site/presentations/
+        run: node tools/presentations.mjs
       - name: Who signed the new commits (published agent keys, or a person's verified commit)
         if: github.event_name == 'push'
         env:
